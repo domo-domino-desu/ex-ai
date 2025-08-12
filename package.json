@@ -5,8 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint-fix",
-    "prepare": "husky"
+    "lint": "turbo run lint-fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.2.1",
