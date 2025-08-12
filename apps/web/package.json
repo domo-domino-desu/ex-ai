@@ -1,0 +1,33 @@
+{
+  "name": "web",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --clearScreen false",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint-fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@repo/ui": "*",
+    "@tanstack/react-router": "^1.131.7",
+    "@tanstack/react-router-devtools": "^1.131.7",
+    "@unocss/runtime": "^66",
+    "react": "^19",
+    "react-dom": "^19",
+    "unocss": "^66"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@tanstack/router-plugin": "^1.131.7",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "typescript": "^5",
+    "vite": "npm:rolldown-vite@latest"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@latest"
+  }
+}
