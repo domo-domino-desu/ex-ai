@@ -10,6 +10,7 @@
         "eslint-plugin-format": "^1.0.1",
         "eslint-plugin-react-hooks": "^6.0.0-rc.1",
         "eslint-plugin-react-refresh": "^0.4.20",
+        "husky": "^9.1.7",
         "lint-staged": "^16.1.5",
         "turbo": "^2.5.5",
       },
@@ -834,6 +835,8 @@
     "hermes-parser": ["hermes-parser@0.25.1", "https://mirrors.huaweicloud.com/repository/npm/hermes-parser/-/hermes-parser-0.25.1.tgz", { "dependencies": { "hermes-estree": "0.25.1" } }, "sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA=="],
 
     "html-escaper": ["html-escaper@2.0.2", "https://mirrors.huaweicloud.com/repository/npm/html-escaper/-/html-escaper-2.0.2.tgz", {}, "sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg=="],
+
+    "husky": ["husky@9.1.7", "https://mirrors.huaweicloud.com/repository/npm/husky/-/husky-9.1.7.tgz", { "bin": { "husky": "bin.js" } }, "sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA=="],
 
     "ignore": ["ignore@5.3.2", "https://mirrors.huaweicloud.com/repository/npm/ignore/-/ignore-5.3.2.tgz", {}, "sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g=="],
 
