@@ -59,6 +59,7 @@
     "postcss"
   ],
   "conventionalCommits.scopes": [
-    "web"
+    "web",
+    "domo"
   ]
 }

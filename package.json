@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint-fix",
+    "lint-fix": "turbo run lint-fix",
     "prepare": "husky"
   },
   "devDependencies": {
