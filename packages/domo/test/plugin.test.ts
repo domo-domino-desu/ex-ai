@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { createPlugin, getDefaultConfig, importPlugin } from '../src/plugin'
+import { getDefaultConfig, importPlugin, registerGlobalCreatePlugin } from '../src'
 
 const pluginContent = `
 export default createPlugin({
@@ -32,6 +32,8 @@ export default createPlugin({
 })
 `
 
+registerGlobalCreatePlugin()
+
 it('can import a plugin', async () => {
   const plugin = await importPlugin(pluginContent)
   expect(plugin).toBeDefined()
@@ -44,37 +46,10 @@ it('can cache imported plugins', async () => {
   expect(plugin1).toBe(plugin2)
 })
 
-it('can get default config values', () => {
-  const plugin = createPlugin({
-    name: 'Test Plugin',
-    description: 'A test plugin',
-    configSchema: {
-      testString: {
-        type: 'string',
-        default: 'default value',
-      },
-      testNumber: {
-        type: 'number',
-        default: 42,
-      },
-      testBoolean: {
-        type: 'boolean',
-        default: true,
-      },
-      testSelect: {
-        type: 'select',
-        options: ['option1', 'option2', 'option3'],
-        default: 'option3',
-      },
-      testMultiSelect: {
-        type: 'multiselect',
-        options: ['option1', 'option2', 'option3'],
-        default: ['option1', 'option2'],
-      },
-    },
-  })
-
-  expect(getDefaultConfig(plugin.configSchema)).toStrictEqual({
+it('can get default config values', async () => {
+  const plugin = await importPlugin(pluginContent)
+  expect(plugin?.configSchema).toBeDefined()
+  expect(getDefaultConfig(plugin!.configSchema)).toStrictEqual({
     testString: 'default value',
     testNumber: 42,
     testBoolean: true,

@@ -8,16 +8,19 @@ declare global {
   // eslint-disable-next-line ts/no-namespace
   namespace globalThis {
     // eslint-disable-next-line vars-on-top,no-var
-    var createPlugin: typeof _createPlugin
+    var createPlugin: null | typeof _createPlugin
   }
 
   interface Window {
-    createPlugin: typeof _createPlugin
+    createPlugin: null | typeof _createPlugin
   }
 }
 
-globalThis.createPlugin = _createPlugin
 export const createPlugin = _createPlugin
+
+export function registerGlobalCreatePlugin() {
+  globalThis.createPlugin = _createPlugin
+}
 
 const pluginCache = new Map<string, Plugin<any> | null>()
 export async function _importPluginInner<TSchema extends ConfigSchema>(content: string) {

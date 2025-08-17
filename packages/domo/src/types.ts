@@ -1,3 +1,5 @@
+import type { SUPPORTED_PROVIDERS } from './provider'
+
 export type Uuid = string
 
 // ==== Chat ====
@@ -19,25 +21,17 @@ export interface Conversation {
 }
 
 // ==== Provider ====
-export const SUPPORTED_PROVIDERS = {
-  openai: {
-    defaultURL: 'https://api.openai.com/v1',
-    urlTip: 'Expected to end with v1',
-  },
-  gemini: {
-    defaultURL: 'https://generativeai.googleapis.com/v1beta',
-    urlTip: 'Expected to end with v1beta',
-  },
-} as const
 export type ProviderType = keyof typeof SUPPORTED_PROVIDERS
 export type Provider = {
   type: 'openai'
   baseURL: string
   apiKey: string
+  model: string
 } | {
   type: 'gemini'
   baseURL: string
   apiKey: string
+  model: string
 }
 
 // ==== Plugin ====
