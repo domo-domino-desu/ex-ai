@@ -17,6 +17,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
+    "mutative": "^1.2.0",
     "turbo": "^2.5.5"
   },
   "workspaces": [

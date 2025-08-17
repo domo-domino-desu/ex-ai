@@ -16,7 +16,7 @@ it('can read env var', () => {
   expect(provider?.model).toBeDefined()
 })
 
-it('can generate test', async () => {
+it('can generate text', async () => {
   const model = createSdkModel(provider)
   expect(model).toBeDefined()
   const response = await generateText({
@@ -31,7 +31,7 @@ it('can generate test', async () => {
   }
 })
 
-it('can stream test', async () => {
+it('can stream text', async () => {
   const model = createSdkModel(provider)
   expect(model).toBeDefined()
   const response = await streamText({

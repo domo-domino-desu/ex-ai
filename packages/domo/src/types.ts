@@ -7,7 +7,7 @@ export interface Message {
   id: Uuid
   role: 'user' | 'assistant' | 'system'
   content: string
-  status: 'streaming' | 'completed' | 'error'
+  specialStatus?: 'streaming' | 'error'
   metadata?: Record<string, any>
   createdAt: string
 }
@@ -90,8 +90,63 @@ export type ConfigFromSchema<TSchema extends ConfigSchema> = {
             : never;
 }
 
+export type EventName = 'onInit' | 'beforeSend' | 'afterReceive'
+export type HandlerFn<TSchema extends ConfigSchema> = (
+  chat: Conversation,
+  config: ConfigFromSchema<TSchema>,
+  capabilities: Record<any, (...args: any) => any>,
+) => Promise<Conversation>
+
 export interface Plugin<TSchema extends ConfigSchema> {
   name: string
   description: string
   configSchema: TSchema
+  /**
+   * Allow extension to modify what will be shown in the chat.
+   */
+  inboundHooks?: {
+    order: number
+    /**
+     * This handler will be called on the pipeline of receiving data from the AI provider.
+     * @param chat The chat object containing messages and metadata.
+     * @param config The configuration object based on the schema.
+     * @param capabilities An object containing capabilities that the extension can use.
+     * @return The modified chat object.
+     */
+    handler: HandlerFn<TSchema>
+  }[]
+  /**
+   * Allow extension to modify what will be sent to the AI provider.
+   */
+  outboundHooks?: {
+    order: number
+    /**
+     * This handler will be called on the pipeline of sending data to the AI provider.
+     * @param chat The chat object containing messages and metadata.
+     * @param config The configuration object based on the schema.
+     * @param capabilities An object containing capabilities that the extension can use.
+     * @return The modified chat object.
+     */
+    handler: HandlerFn<TSchema>
+  }[]
+  /**
+   * Allow extension to modify the source-of-truth chat history.
+   */
+  anyHooks?: {
+    event: EventName
+    /**
+     * This handler will be called when the specified event occurs. The result will be used as the new source-of-truth chat history.
+     * @param chat The source-of-truth chat history.
+     * @param config The configuration object based on the schema.
+     * @param capabilities An object containing capabilities that the extension can use.
+     * @return The modified chat object.
+     */
+    handler: HandlerFn<TSchema>
+  }[]
+  /**
+   * Allow extension to add additional components to the chat UI.
+   */
+  additionalComponents?: {
+    [key: string]: React.ComponentType<any>
+  }
 }
