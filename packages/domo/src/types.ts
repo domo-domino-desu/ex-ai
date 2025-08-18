@@ -90,7 +90,6 @@ export type ConfigFromSchema<TSchema extends ConfigSchema> = {
             : never;
 }
 
-export type EventName = 'onInit' | 'beforeSend' | 'afterReceive'
 export type HandlerFn<TSchema extends ConfigSchema> = (
   chat: Conversation,
   config: ConfigFromSchema<TSchema>,
@@ -130,12 +129,16 @@ export interface Plugin<TSchema extends ConfigSchema> {
     handler: HandlerFn<TSchema>
   }[]
   /**
-   * Allow extension to modify the source-of-truth chat history.
+   * Allow extension to maintain a consistent state of the chat history.
    */
-  anyHooks?: {
-    event: EventName
+  modHooks?: {
+    order: number
     /**
-     * This handler will be called when the specified event occurs. The result will be used as the new source-of-truth chat history.
+     * This handler will be called whenever the chat history is changed,
+     * such as a message being added, edited, or deleted, or a new conversation being created.
+     * (By `added', we mean 1. before user sends, 2. after AI provider fully responds.)
+     * **This is only useful for plugins that need to maintain a consistent state.**
+     * The result will be used as the new source-of-truth chat history.
      * @param chat The source-of-truth chat history.
      * @param config The configuration object based on the schema.
      * @param capabilities An object containing capabilities that the extension can use.

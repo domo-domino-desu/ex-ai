@@ -20,8 +20,7 @@ export function createSdkModel(provider: Provider) {
       apiKey: provider.apiKey,
     })
     return sdkProvider.chat(provider.model)
-  }
-  else if (provider.type === 'gemini') {
+  } else if (provider.type === 'gemini') {
     const sdkProvider = createGoogleGenerativeAI({
       baseURL: provider.baseURL || SUPPORTED_PROVIDERS.gemini.defaultURL,
       apiKey: provider.apiKey,

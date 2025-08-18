@@ -8,4 +8,8 @@ export default antfu({
   rules: {
     'eslint-comments/no-unlimited-disable': 'off',
   },
+}, {
+  rules: {
+    'style/brace-style': ['error', '1tbs'],
+  },
 })

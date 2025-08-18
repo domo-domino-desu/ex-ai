@@ -1,4 +1,7 @@
-import type { ConfigFromSchema, ConfigSchema, Conversation, EventName, Plugin } from './types'
+import type { ConfigFromSchema, ConfigSchema, Conversation, Plugin } from './types'
+import { isBrowser, isBun, isDeno, isNode } from 'environment'
+
+const isLocal = isNode || isBun || isDeno
 
 declare global {
   // eslint-disable-next-line ts/no-namespace
@@ -25,7 +28,7 @@ export function registerGlobalCreatePlugin() {
   globalThis.createPlugin = _createPlugin
 }
 
-export async function _importPluginInner<TSchema extends ConfigSchema>(content: string) {
+export async function _importPluginBrowser<TSchema extends ConfigSchema>(content: string) {
   const blob = new Blob([content], { type: 'application/javascript' })
   const url = URL.createObjectURL(blob)
   const module = await import(/* @vite-ignore */ url)
@@ -35,6 +38,22 @@ export async function _importPluginInner<TSchema extends ConfigSchema>(content: 
   }
   return null
 }
+
+export async function _importPluginLocal<TSchema extends ConfigSchema>(content: string) {
+  const fs = await import('node:fs/promises')
+  const { join } = await import('node:path')
+  const { tmpdir } = await import('node:os')
+
+  const tempFile = await fs.mkdtemp(join(tmpdir(), 'plugin-'))
+  const filePath = `${tempFile}/plugin.js`
+  await fs.writeFile(filePath, content)
+  const module = await import(filePath)
+  if (module.default) {
+    return module.default as Plugin<TSchema>
+  }
+  return null
+}
+
 const pluginCache = new Map<string, Plugin<any> | null>()
 
 /**
@@ -46,7 +65,15 @@ export async function importPlugin<TSchema extends ConfigSchema>(content: string
   if (pluginCache.has(content)) {
     return pluginCache.get(content) as Plugin<TSchema>
   }
-  const plugin = await _importPluginInner<TSchema>(content)
+  let importFn
+  if (isBrowser) {
+    importFn = _importPluginBrowser
+  } else if (isLocal) {
+    importFn = _importPluginLocal
+  } else {
+    throw new Error('Unsupported environment for plugin import')
+  }
+  const plugin = await importFn<TSchema>(content)
   pluginCache.set(content, plugin)
   return plugin
 }
@@ -64,20 +91,15 @@ export function getDefaultConfig<TSchema extends ConfigSchema>(
   ) as ConfigFromSchema<TSchema>
 }
 
-export function buildPipeline(type: 'inbound' | 'outbound' | EventName, plugins: { plugin: Plugin<any>, config: any }[], capabilities: Record<any, (...args: any) => any>) {
+export function buildPipeline(type: 'inbound' | 'outbound' | 'mod', plugins: { plugin: Plugin<any>, config: any }[], capabilities: Record<any, (...args: any) => any>) {
   return async (chat: Conversation) => {
     const allHooks = plugins
-      .flatMap(({ plugin, config }) => {
-        const hooks = type === 'inbound'
-          ? plugin.inboundHooks || []
-          : plugin.outboundHooks || []
-        return hooks.map(hook => ({
-          handler: hook.handler,
-          order: hook.order,
-          pluginName: plugin.name,
-          config,
-        }))
-      })
+      .flatMap(({ plugin, config }) => (plugin[`${type}Hooks`] || []).map(hook => ({
+        handler: hook.handler,
+        order: hook.order,
+        pluginName: plugin.name,
+        config,
+      })))
       .sort((a, b) => a.order - b.order)
     for (const { handler, config } of allHooks) {
       chat = await handler(chat, config, capabilities)
